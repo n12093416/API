@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>+1 스피드 키보드 탈출: 캔디 & 초콜릿</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #ff9aef, #fed6e3);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .game-container {
+            width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 20px;
+            text-align: center;
+            border: 4px solid #ff6b81;
+        }
+        h1 {
+            color: #d63031;
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px #ffeaa7;
+        }
+        .stats-panel {
+            display: flex;
+            justify-content: space-around;
+            background: #ffeaa7;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border: 2px dashed #fab1a0;
+        }
+        .stage-box {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(to bottom, #74b9ff, #a29bfe);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid #6c5ce7;
+        }
+        /* 캔디 배경 장식 */
+        .candy-bg {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background: #e84393;
+            border-top: 5px solid #fd79a8;
+        }
+        /* 플레이어 (초콜릿 아바타) */
+        #player {
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            width: 40px;
+            height: 50px;
+            background: #8e44ad;
+            border-radius: 8px;
+            transition: transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* 탈출 지점 (골인 캔디바) */
+        #goal {
+            position: absolute;
+            bottom: 50px;
+            right: 40px;
+            width: 30px;
+            height: 120px;
+            background: #00b894;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            writing-mode: vertical-rl;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 0 10px #55efc4;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: 0.2s;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        #train-btn {
+            background: #ff7675;
+            color: white;
+        }
+        #train-btn:hover {
+            background: #d63031;
+        }
+        #escape-btn {
+            background: #00b894;
+            color: white;
+        }
+        #escape-btn:hover {
+            background: #00a8ff;
+        }
+        .log-box {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #636e72;
+            height: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h1>🍬 +1 스피드 키보드 탈출: 캔디 & 초콜릿 🍫</h1>
+        
+        <div class="stats-panel">
+            <div>⚡ 스피드: <span id="speed-val">0</span></div>
+            <div>🏆 트로피: <span id="trophy-val">0</span></div>
+            <div>🗺️ 스테이지: <span id="stage-val">1</span></div>
+        </div>
+
+        <div class="stage-box">
+            <div id="player">초코</div>
+            <div id="goal">탈출구</div>
+            <div class="candy-bg"></div>
+        </div>
+
+        <div class="controls">
+            <button id="train-btn" onclick="trainSpeed()">[스페이스바 / 클릭] +1 스피드 훈련! ⚡</button>
+            <button id="escape-btn" onclick="tryEscape()">🚀 탈출 레이스 도전!</button>
+        </div>
+
+        <div class="log-box" id="log-msg">키를 연타하거나 훈련 버튼을 눌러 스피드를 올리세요!</div>
+    </div>
+
+    <script>
+        let speed = 0;
+        let trophies = 0;
+        let stage = 1;
+        let isRacing = false;
+
+        const speedEl = document.getElementById('speed-val');
+        const trophyEl = document.getElementById('trophy-val');
+        const stageEl = document.getElementById('stage-val');
+        const playerEl = document.getElementById('player');
+        const logEl = document.getElementById('log-msg');
+
+        // 스페이스바 훈련 지원
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                trainSpeed();
+            }
+        });
+
+        function trainSpeed() {
+            if (isRacing) return;
+            speed += 1;
+            speedEl.innerText = speed;
+            
+            // 효과 애니메이션
+            playerEl.style.transform = `scale(1.1)`;
+            setTimeout(() => playerEl.style.transform = `scale(1)`, 50);
+            
+            logEl.innerText = `촵촵! 스피드가 +1 증가했습니다! (현재 스피드: ${speed})`;
+        }
+
+        function tryEscape() {
+            if (isRacing) return;
+            
+            // 스테이지별 필요 속도 (스테이지 * 50)
+            let requiredSpeed = stage * 50;
+            
+            if (speed < requiredSpeed) {
+                logEl.innerText = `❌ 스피드가 부족합니다! 탈출하려면 최소 ${requiredSpeed} 스피드가 필요해요!`;
+                return;
+            }
+
+            isRacing = true;
+            logEl.innerText = `🏃 초콜릿 캐릭터가 캔디 트랙을 향해 질주합니다...!`;
+            
+            let pos = 50;
+            let targetPos = 710;
+            let raceInterval = setInterval(() => {
+                pos += speed / 5;
+                if (pos >= targetPos) {
+                    pos = targetPos;
+                    clearInterval(raceInterval);
+                    
+                    // 성공 처리
+                    trophies += stage;
+                    trophyEl.innerText = trophies;
+                    logEl.innerText = `🎉 성공! 스테이지 ${stage} 탈출 완료! 트로피 +${stage} 획득!`;
+                    
+                    stage++;
+                    stageEl.innerText = stage;
+                    
+                    // 위치 리셋 및 레이스 종료
+                    setTimeout(() => {
+                        playerEl.style.left = `50px`;
+                        isRacing = false;
+                    }, 1000);
+                }
+                playerEl.style.left = pos + 'px';
+            }, 30);
+        }
+    </script>
+</body>
+</html>
