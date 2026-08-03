@@ -1,242 +1,353 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>+1 스피드 키보드 탈출: 캔디 & 초콜릿</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background: linear-gradient(135deg, #ff9aef, #fed6e3);
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-        .game-container {
-            width: 800px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            padding: 20px;
-            text-align: center;
-            border: 4px solid #ff6b81;
-        }
-        h1 {
-            color: #d63031;
-            font-size: 24px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px #ffeaa7;
-        }
-        .stats-panel {
-            display: flex;
-            justify-content: space-around;
-            background: #ffeaa7;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            border: 2px dashed #fab1a0;
-        }
-        .stage-box {
-            position: relative;
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(to bottom, #74b9ff, #a29bfe);
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            border: 3px solid #6c5ce7;
-        }
-        /* 캔디 배경 장식 */
-        .candy-bg {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 50px;
-            background: #e84393;
-            border-top: 5px solid #fd79a8;
-        }
-        /* 플레이어 (초콜릿 아바타) */
-        #player {
-            position: absolute;
-            bottom: 50px;
-            left: 50px;
-            width: 40px;
-            height: 50px;
-            background: #8e44ad;
-            border-radius: 8px;
-            transition: transform 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        /* 탈출 지점 (골인 캔디바) */
-        #goal {
-            position: absolute;
-            bottom: 50px;
-            right: 40px;
-            width: 30px;
-            height: 120px;
-            background: #00b894;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            writing-mode: vertical-rl;
-            font-size: 12px;
-            font-weight: bold;
-            box-shadow: 0 0 10px #55efc4;
-        }
-        .controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: 0.2s;
-        }
-        button:active {
-            transform: scale(0.95);
-        }
-        #train-btn {
-            background: #ff7675;
-            color: white;
-        }
-        #train-btn:hover {
-            background: #d63031;
-        }
-        #escape-btn {
-            background: #00b894;
-            color: white;
-        }
-        #escape-btn:hover {
-            background: #00a8ff;
-        }
-        .log-box {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #636e72;
-            height: 25px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AES-GCM Encryption & Decryption</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --success: #22c55e;
+      --error: #ef4444;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    h2 { font-size: 1.25rem; margin-bottom: 8px; }
+    p.sub { color: var(--muted); font-size: 0.875rem; margin-bottom: 24px; }
+
+    .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+    input[type="text"]:focus { border-color: var(--accent); }
+
+    button.btn-primary {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--accent);
+      color: #000;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+    button.btn-primary:hover { background-color: var(--accent-hover); color: #fff; }
+
+    .msg { font-size: 0.875rem; margin-top: 8px; display: none; }
+    .msg.error { color: var(--error); }
+    .msg.success { color: var(--success); }
+
+    .result-view { display: none; flex-direction: column; gap: 16px; margin-top: 16px; }
+    
+    .result-box {
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .result-label { font-size: 0.75rem; color: var(--muted); font-weight: bold; text-transform: uppercase; }
+
+    .btn-copy {
+      background-color: var(--card-bg);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-copy:hover { background-color: var(--accent); color: #000; }
+
+    .result-value {
+      font-family: monospace;
+      word-break: break-all;
+      color: var(--accent);
+      font-size: 0.9rem;
+      background-color: rgba(0,0,0,0.2);
+      padding: 8px;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="game-container">
-        <h1>🍬 +1 스피드 키보드 탈출: 캔디 & 초콜릿 🍫</h1>
-        
-        <div class="stats-panel">
-            <div>⚡ 스피드: <span id="speed-val">0</span></div>
-            <div>🏆 트로피: <span id="trophy-val">0</span></div>
-            <div>🗺️ 스테이지: <span id="stage-val">1</span></div>
-        </div>
-
-        <div class="stage-box">
-            <div id="player">초코</div>
-            <div id="goal">탈출구</div>
-            <div class="candy-bg"></div>
-        </div>
-
-        <div class="controls">
-            <button id="train-btn" onclick="trainSpeed()">[스페이스바 / 클릭] +1 스피드 훈련! ⚡</button>
-            <button id="escape-btn" onclick="tryEscape()">🚀 탈출 레이스 도전!</button>
-        </div>
-
-        <div class="log-box" id="log-msg">키를 연타하거나 훈련 버튼을 눌러 스피드를 올리세요!</div>
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('enc')">🔒 생성 & 암호화</div>
+      <div class="tab" onclick="switchTab('dec')">🔓 복호화 (해독)</div>
     </div>
 
-    <script>
-        let speed = 0;
-        let trophies = 0;
-        let stage = 1;
-        let isRacing = false;
+    <div id="enc-section" class="section active">
+      <h2>API Key & 암호문 생성</h2>
+      <p class="sub">문자를 입력하면 새 API Key가 발급되고 해당 키로 문자를 암호화합니다.</p>
+      
+      <div class="input-group">
+        <input type="text" id="rawText" placeholder="아무 글자나 입력하세요..." onkeypress="if(event.key==='Enter') encryptData()">
+        <button class="btn-primary" onclick="encryptData()">생성 및 암호화</button>
+      </div>
+      <div id="enc-msg" class="msg error"></div>
 
-        const speedEl = document.getElementById('speed-val');
-        const trophyEl = document.getElementById('trophy-val');
-        const stageEl = document.getElementById('stage-val');
-        const playerEl = document.getElementById('player');
-        const logEl = document.getElementById('log-msg');
+      <div id="enc-result" class="result-view">
+        <div class="result-box">
+          <div class="result-header">
+            <span class="result-label">생성된 API Key (열쇠)</span>
+            <button class="btn-copy" onclick="copyText('out-apikey', this)">복사</button>
+          </div>
+          <div class="result-value" id="out-apikey"></div>
+        </div>
+        <div class="result-box">
+          <div class="result-header">
+            <span class="result-label">암호화된 문자열 (자물쇠)</span>
+            <button class="btn-copy" onclick="copyText('out-encrypted', this)">복사</button>
+          </div>
+          <div class="result-value" id="out-encrypted"></div>
+        </div>
+      </div>
+    </div>
 
-        // 스페이스바 훈련 지원
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                trainSpeed();
-            }
-        });
+    <div id="dec-section" class="section">
+      <h2>암호문 복호화 (해독)</h2>
+      <p class="sub">API Key와 암호화된 문자열을 입력하여 원본 글자를 확인합니다.</p>
+      
+      <div class="input-group">
+        <input type="text" id="decApiKey" placeholder="API Key 입력 (sk-proj-...)">
+        <input type="text" id="decCipherText" placeholder="암호화된 문자열 입력" onkeypress="if(event.key==='Enter') decryptData()">
+        <button class="btn-primary" onclick="decryptData()">복호화 실행</button>
+      </div>
+      <div id="dec-msg" class="msg"></div>
 
-        function trainSpeed() {
-            if (isRacing) return;
-            speed += 1;
-            speedEl.innerText = speed;
-            
-            // 효과 애니메이션
-            playerEl.style.transform = `scale(1.1)`;
-            setTimeout(() => playerEl.style.transform = `scale(1)`, 50);
-            
-            logEl.innerText = `촵촵! 스피드가 +1 증가했습니다! (현재 스피드: ${speed})`;
-        }
+      <div id="dec-result" class="result-view">
+        <div class="result-box">
+          <div class="result-header">
+            <span class="result-label">해독된 원본 문자열</span>
+            <button class="btn-copy" onclick="copyText('out-decrypted', this)">복사</button>
+          </div>
+          <div class="result-value" id="out-decrypted"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        function tryEscape() {
-            if (isRacing) return;
-            
-            // 스테이지별 필요 속도 (스테이지 * 50)
-            let requiredSpeed = stage * 50;
-            
-            if (speed < requiredSpeed) {
-                logEl.innerText = `❌ 스피드가 부족합니다! 탈출하려면 최소 ${requiredSpeed} 스피드가 필요해요!`;
-                return;
-            }
+  <script>
+    // 탭 전환 로직
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+      
+      if(tabName === 'enc') {
+        document.querySelectorAll('.tab')[0].classList.add('active');
+        document.getElementById('enc-section').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab')[1].classList.add('active');
+        document.getElementById('dec-section').classList.add('active');
+      }
+    }
 
-            isRacing = true;
-            logEl.innerText = `🏃 초콜릿 캐릭터가 캔디 트랙을 향해 질주합니다...!`;
-            
-            let pos = 50;
-            let targetPos = 710;
-            let raceInterval = setInterval(() => {
-                pos += speed / 5;
-                if (pos >= targetPos) {
-                    pos = targetPos;
-                    clearInterval(raceInterval);
-                    
-                    // 성공 처리
-                    trophies += stage;
-                    trophyEl.innerText = trophies;
-                    logEl.innerText = `🎉 성공! 스테이지 ${stage} 탈출 완료! 트로피 +${stage} 획득!`;
-                    
-                    stage++;
-                    stageEl.innerText = stage;
-                    
-                    // 위치 리셋 및 레이스 종료
-                    setTimeout(() => {
-                        playerEl.style.left = `50px`;
-                        isRacing = false;
-                    }, 1000);
-                }
-                playerEl.style.left = pos + 'px';
-            }, 30);
-        }
-    </script>
+    // API 키에서 AES 암호화 키 추출
+    async function getCryptoKey(apiKey) {
+      const keyMaterial = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(apiKey));
+      return await crypto.subtle.importKey(
+        'raw', keyMaterial, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']
+      );
+    }
+
+    // ArrayBuffer를 Hex 문자열로 변환
+    function buf2hex(buffer) {
+      return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Hex 문자열을 Uint8Array로 변환
+    function hex2buf(hexString) {
+      const bytes = new Uint8Array(hexString.length / 2);
+      for (let i = 0; i < bytes.length; i++) {
+        bytes[i] = parseInt(hexString.substr(i * 2, 2), 16);
+      }
+      return bytes;
+    }
+
+    // API Key 무작위 생성 (길이: 24바이트)
+    function generateApiKey() {
+      const array = new Uint8Array(24);
+      crypto.getRandomValues(array);
+      return `sk-proj-${buf2hex(array)}`;
+    }
+
+    // 1. 암호화 실행
+    async function encryptData() {
+      const rawText = document.getElementById('rawText').value.trim();
+      const msgEl = document.getElementById('enc-msg');
+      if (!rawText) {
+        msgEl.innerText = "❌ 문자를 입력해주세요!";
+        msgEl.className = "msg error";
+        msgEl.style.display = "block";
+        return;
+      }
+      msgEl.style.display = "none";
+
+      try {
+        const apiKey = generateApiKey();
+        const aesKey = await getCryptoKey(apiKey);
+        
+        // IV(초기화 벡터) 생성
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const encodedText = new TextEncoder().encode(rawText);
+        
+        // AES-GCM으로 암호화
+        const cipherBuffer = await crypto.subtle.encrypt(
+          { name: 'AES-GCM', iv: iv }, aesKey, encodedText
+        );
+
+        // 결과 합치기 (iv값-암호문)
+        const encryptedHex = `${buf2hex(iv)}-${buf2hex(cipherBuffer)}`;
+
+        document.getElementById('out-apikey').innerText = apiKey;
+        document.getElementById('out-encrypted').innerText = encryptedHex;
+        document.getElementById('enc-result').style.display = "flex";
+      } catch (e) {
+        msgEl.innerText = "❌ 암호화 중 오류가 발생했습니다.";
+        msgEl.style.display = "block";
+      }
+    }
+
+    // 2. 복호화 실행
+    async function decryptData() {
+      const apiKey = document.getElementById('decApiKey').value.trim();
+      const cipherText = document.getElementById('decCipherText').value.trim();
+      const msgEl = document.getElementById('dec-msg');
+      
+      if (!apiKey || !cipherText) {
+        msgEl.innerText = "❌ API Key와 암호문을 모두 입력해주세요!";
+        msgEl.className = "msg error";
+        msgEl.style.display = "block";
+        return;
+      }
+      msgEl.style.display = "none";
+
+      try {
+        const aesKey = await getCryptoKey(apiKey);
+        const parts = cipherText.split('-');
+        
+        if (parts.length !== 2) throw new Error("잘못된 암호문 형식입니다.");
+        
+        const iv = hex2buf(parts[0]);
+        const data = hex2buf(parts[1]);
+
+        // 복호화
+        const decryptedBuffer = await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: iv }, aesKey, data
+        );
+        
+        const originalText = new TextDecoder().decode(decryptedBuffer);
+
+        document.getElementById('out-decrypted').innerText = originalText;
+        document.getElementById('dec-result').style.display = "flex";
+        
+        msgEl.innerText = "✅ 복호화 성공!";
+        msgEl.className = "msg success";
+        msgEl.style.display = "block";
+      } catch (e) {
+        msgEl.innerText = "❌ 복호화 실패: Key 또는 암호문이 틀렸습니다.";
+        msgEl.className = "msg error";
+        msgEl.style.display = "block";
+        document.getElementById('dec-result').style.display = "none";
+      }
+    }
+
+    // 복사 기능
+    function copyText(elementId, buttonEl) {
+      const textToCopy = document.getElementById(elementId).innerText;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(() => showSuccess(buttonEl));
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showSuccess(buttonEl);
+      }
+    }
+
+    function showSuccess(buttonEl) {
+      const originalText = buttonEl.innerText;
+      buttonEl.innerText = "복사됨!";
+      buttonEl.style.backgroundColor = "var(--success)";
+      buttonEl.style.color = "#fff";
+      setTimeout(() => {
+        buttonEl.innerText = originalText;
+        buttonEl.style.backgroundColor = "";
+        buttonEl.style.color = "";
+      }, 1500);
+    }
+  </script>
 </body>
 </html>
